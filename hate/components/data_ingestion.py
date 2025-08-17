@@ -5,6 +5,7 @@ from hate.logger import logging
 from hate.exceptional import CustomException
 from hate.configuration.gcloud_syncer import GCloudSync
 from hate.entity.config_entity import DataIngestionConfig
+from hate.entity.artifact_entity import DataIngestionArtifacts
 
 class DataIngestion:
     def __init__(self, data_ingestion_config: DataIngestionConfig):
@@ -22,6 +23,40 @@ class DataIngestion:
             
             logging.info("Exited the get_data_from_gcloud method of data ingestion class")
 
+        except Exception as e:
+            raise CustomException(e,sys) from e
+        
+    def unzip_and_clean(self) -> None:
+        try:
+            logging.info("Entered the unzip_and_clean method of Data ingestion class")
+
+            with ZipFile(self.data_ingestion_config.ZIP_FILE_PATH, 'r') as zip_ref:
+                zip_ref.extractall(self.data_ingestion_config.ZIP_FILE_DIR)
+            
+            logging.info("Exited the unZip_and_clean method of data ingestion class")
+
+            return self.data_ingestion_config.DATA_ARTIFACTS_DIR, self.data_ingestion_config.NEW_DATA_ARTIFACTS_DIR
+        
+        except Exception as e:
+            raise CustomException(e,sys) from e
+        
+    def initiate_data_ingestion(self)-> DataIngestionArtifacts:
+        logging.info("Entered the initiate data ingestion method of data indestion class")
+        try:
+            self.get_data_from_gcloud()
+            logging.info("Fetched the data from gcloud")
+
+            imbalance_data_file_path,raw_data_file_path=self.unzip_and_clean()
+            logging.info("Unzipped and cleaned the data")
+            
+            data_ingestion_artifacts=DataIngestionArtifacts(
+                imbalance_data_file_path= imbalance_data_file_path,
+                raw_data_file_path = raw_data_file_path
+            )
+            logging.info("Exited the initiate data ingestion method of data indestion class")
+            logging.info(f"Data ingestion Artifacts :{data_ingestion_artifacts}")
+            
+            return data_ingestion_artifacts
         except Exception as e:
             raise CustomException(e,sys) from e
 
