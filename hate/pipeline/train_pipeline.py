@@ -4,8 +4,8 @@ from hate.exceptional import CustomException
 
 from hate.components.data_ingestion import DataIngestion
 
-from entity.config_entity import DataIngestionConfig
-from entity.artifact_entity import DataIngestionArtifacts
+from hate.entity.config_entity import DataIngestionConfig
+from hate.entity.artifact_entity import DataIngestionArtifacts
 
 class TrainPipeline:
     def __init__(self):
