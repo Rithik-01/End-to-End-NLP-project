@@ -1,5 +1,5 @@
-import os 
-import sys 
+import os
+import sys
 from zipfile import ZipFile
 from hate.logger import logging
 from hate.exceptional import CustomException
@@ -21,7 +21,7 @@ class DataIngestion:
                                                 self.data_ingestion_config.ZIP_FILE_NAME,
                                                 self.data_ingestion_config.DATA_INGESTION_ARTIFACTS_DIR,)
             
-            logging.info("Exited the get_data_from_gcloud method of data ingestion class")
+            logging.info("Exited the get_data_from_gcloud method of Data ingestion class")
 
         except Exception as e:
             raise CustomException(e,sys) from e
