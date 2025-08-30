@@ -16,6 +16,7 @@ DATA_INGESTION_ARTIFACTS_DIR = "DataIngestionArtifacts"
 DATA_INGESTION_IMBALANCE_DATA_DIR = "imbalanced_data.csv"
 DATA_INGESTION_RAW_DATA_DIR = "raw_data.csv"
 
+
 #Data validation constands
 LABELS=['label','tweet']
 data_path=r'C:\Users\rithi\OneDrive\Desktop\END-TO-END-NLP-PROJECT\artifacts\08_22_2025_10_30_41\DataIngestionArtifacts\raw_data.csv'
@@ -30,3 +31,24 @@ AXIS = 1
 INPLACE = True
 DROP_COLUMNS = ['Unnamed: 0','count','hate_speech','offensive_language','neither']
 CLASS = 'class'
+
+# Model training constants
+MODEL_TRAINER_ARTIFACTS_DIR = 'ModelTrainerArtifacts'
+TRAINED_MODEL_DIR = 'trained_model'
+TRAINED_MODEL_NAME = 'model.tf'
+X_TEST_FILE_NAME = 'x_test.csv'
+Y_TEST_FILE_NAME = 'y_test.csv'
+
+X_TRAIN_FILE_NAME = 'x_train.csv'
+
+RANDOM_STATE = 42
+EPOCH = 1
+BATCH_SIZE = 128
+VALIDATION_SPLIT = 0.2
+
+# Model Architecture constants
+MAX_WORDS = 50000
+MAX_LEN = 300
+LOSS = 'binary_crossentropy'
+METRICS = ['accuracy']
+ACTIVATION = 'sigmoid'

@@ -1,5 +1,6 @@
 pandas
-tensorflow
+# tensorflow
+tensorflow-keras
 matplotlib
 nltk
 regex
