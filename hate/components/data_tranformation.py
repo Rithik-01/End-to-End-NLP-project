@@ -37,7 +37,7 @@ class DataTransformation:
             raw_data.drop(self.data_transformation_config.DROP_COLUMNS,axis = self.data_transformation_config.AXIS,
             inplace = self.data_transformation_config.INPLACE)
 
-            raw_data[raw_data[self.data_transformation_config.CLASS]==0][self.data_transformation_config.CLASS]=1
+            # raw_data[raw_data[self.data_transformation_config.CLASS]==0][self.data_transformation_config.CLASS]=1
             
             # replace the value of 0 to 1
             raw_data[self.data_transformation_config.CLASS].replace({0:1},inplace=True)
@@ -67,26 +67,27 @@ class DataTransformation:
         except Exception as e:
             raise CustomException(e, sys) from e
         
-    def concat_data_cleaning(self, words):
-
+    def concat_data_cleaning(self, text):
         try:
-            logging.info("Entered into the concat_data_cleaning function")
-            # Let's apply stemming and stopwords on the data
             stemmer = nltk.SnowballStemmer("english")
-            stopword = set(stopwords.words('english'))
-            words = str(words).lower()
-            words = re.sub('\[.*?\]', '', words)
-            words = re.sub('https?://\S+|www\.\S+', '', words)
-            words = re.sub('<.*?>+', '', words)
-            words = re.sub('[%s]' % re.escape(string.punctuation), '', words)
-            words = re.sub('\n', '', words)
-            words = re.sub('\w*\d\w*', '', words)
-            words = [word for word in words.split(' ') if words not in stopword]
-            words=" ".join(words)
-            words = [stemmer.stem(word) for word in words.split(' ')]
-            words=" ".join(words)
-            logging.info("Exited the concat_data_cleaning function")
-            return words 
+            stopword = set(stopwords.words("english"))
+
+            # Lowercase
+            text = str(text).lower()
+
+            # Remove unwanted patterns
+            text = re.sub(r'\[.*?\]', '', text)
+            text = re.sub(r'https?://\S+|www\.\S+', '', text)
+            text = re.sub(r'<.*?>+', '', text)
+            text = re.sub(r'[%s]' % re.escape(string.punctuation), '', text)
+            text = re.sub(r'\n', ' ', text)
+            text = re.sub(r'\w*\d\w*', '', text)
+
+            # Tokenize → remove stopwords → stem
+            tokens = [stemmer.stem(word) for word in text.split() if word not in stopword]
+
+            # Join back to string
+            return " ".join(tokens)
 
         except Exception as e:
             raise CustomException(e, sys) from e
@@ -98,6 +99,8 @@ class DataTransformation:
             self.raw_data_cleaning()
             df = self.concat_dataframe()
             df[self.data_transformation_config.TWEET]=df[self.data_transformation_config.TWEET].apply(self.concat_data_cleaning)
+
+            # df = df.dropna(subset=["tweet"]).reset_index(drop=True)
 
             os.makedirs(self.data_transformation_config.DATA_TRANSFORMATION_ARTIFACTS_DIR, exist_ok=True)
             df.to_csv(self.data_transformation_config.TRANSFORMED_FILE_PATH,index=False,header=True)
