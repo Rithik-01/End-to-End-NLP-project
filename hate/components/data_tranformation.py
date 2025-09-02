@@ -72,10 +72,8 @@ class DataTransformation:
             stemmer = nltk.SnowballStemmer("english")
             stopword = set(stopwords.words("english"))
 
-            # Lowercase
             text = str(text).lower()
 
-            # Remove unwanted patterns
             text = re.sub(r'\[.*?\]', '', text)
             text = re.sub(r'https?://\S+|www\.\S+', '', text)
             text = re.sub(r'<.*?>+', '', text)
@@ -83,10 +81,8 @@ class DataTransformation:
             text = re.sub(r'\n', ' ', text)
             text = re.sub(r'\w*\d\w*', '', text)
 
-            # Tokenize → remove stopwords → stem
             tokens = [stemmer.stem(word) for word in text.split() if word not in stopword]
 
-            # Join back to string
             return " ".join(tokens)
 
         except Exception as e:

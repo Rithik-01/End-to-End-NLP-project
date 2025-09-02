@@ -1,7 +1,6 @@
 import os
 import sys
 import keras
-import pickle
 import numpy as np
 import pandas as pd
 from hate.logger import logging
@@ -62,9 +61,6 @@ class ModelEvaluation:
             logging.info("Entering into to the evaluate function of Model Evaluation class")
             print(self.model_trainer_artifacts.x_test_path)
 
-            # x_test = pd.read_csv(self.model_trainer_artifacts.x_test_path,index_col=False)
-            # print(x_test)
-            # y_test = pd.read_csv(self.model_trainer_artifacts.y_test_path,index_col=False)
             
             x_test = pd.read_csv(self.model_trainer_artifacts.x_test_path)["tweet"]
             y_test = pd.read_csv(self.model_trainer_artifacts.y_test_path)["label"]

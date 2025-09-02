@@ -14,6 +14,7 @@ class ModelArchitecture:
     
     def get_model(self):
         model = Sequential()
+        model.add(tf.keras.Input(shape=(1,), dtype=tf.string))
         model.add(self.vectorizer)
         model.add(Embedding(MAX_WORDS, 100,input_length=MAX_LEN))
         model.add(SpatialDropout1D(0.2))
