@@ -36,8 +36,6 @@ class DataTransformation:
             raw_data = pd.read_csv(self.data_ingestion_artifacts.raw_data_file_path)
             raw_data.drop(self.data_transformation_config.DROP_COLUMNS,axis = self.data_transformation_config.AXIS,
             inplace = self.data_transformation_config.INPLACE)
-
-            # raw_data[raw_data[self.data_transformation_config.CLASS]==0][self.data_transformation_config.CLASS]=1
             
             # replace the value of 0 to 1
             raw_data[self.data_transformation_config.CLASS].replace({0:1},inplace=True)
@@ -95,8 +93,6 @@ class DataTransformation:
             self.raw_data_cleaning()
             df = self.concat_dataframe()
             df[self.data_transformation_config.TWEET]=df[self.data_transformation_config.TWEET].apply(self.concat_data_cleaning)
-
-            # df = df.dropna(subset=["tweet"]).reset_index(drop=True)
 
             os.makedirs(self.data_transformation_config.DATA_TRANSFORMATION_ARTIFACTS_DIR, exist_ok=True)
             df.to_csv(self.data_transformation_config.TRANSFORMED_FILE_PATH,index=False,header=True)

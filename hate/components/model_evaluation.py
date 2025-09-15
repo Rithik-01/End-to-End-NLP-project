@@ -45,7 +45,7 @@ class ModelEvaluation:
 
             best_model_path = os.path.join(self.model_evaluation_config.BEST_MODEL_DIR_PATH,
                                            self.model_evaluation_config.MODEL_NAME)
-            logging.info("Exited the get_best_model_from_gcloud method of Model Evaluation class")
+            logging.info(f"Exited the get_best_model_from_gcloud method of Model Evaluation class :{best_model_path}")
             return best_model_path
         except Exception as e:
             raise CustomException(e, sys) from e 
@@ -111,8 +111,8 @@ class ModelEvaluation:
             logging.info("Fetch best model from gcloud storage")
             best_model_path = self.get_best_model_from_gcloud()
 
-            logging.info("Check is best model present in the gcloud storage or not ?")
-            if os.path.isfile(best_model_path) is False:
+            logging.info(f"Check is best model present in the gcloud storage or not ? :{best_model_path}")
+            if os.path.isdir(best_model_path) is False:
                 is_model_accepted = True
                 logging.info("glcoud storage model is false and currently trained model accepted is true")
 
@@ -122,15 +122,17 @@ class ModelEvaluation:
                 best_model_accuracy= self.evaluate(best_model_path)
 
                 logging.info("Comparing loss between best_model_loss and trained_model_loss ? ")
-                if trained_model_accuracy > best_model_accuracy :
+                logging.info(f"trained_model_accuracy:{trained_model_accuracy},best_model_accuracy:{best_model_accuracy}")
+
+                if trained_model_accuracy[1] > best_model_accuracy[1] :
                     is_model_accepted = True
-                    logging.info("Trained model not accepted")
+                    logging.info("Trained model accepted")
                 else:
                     is_model_accepted = False
-                    logging.info("Trained model accepted")
+                    logging.info("Trained model not accepted")
 
             model_evaluation_artifacts = ModelEvaluationArtifacts(is_model_accepted=is_model_accepted)
-            logging.info("Returning the ModelEvaluationArtifacts")
+            logging.info(f"Returning the ModelEvaluationArtifacts :is_model_accepted:{is_model_accepted}")
             return model_evaluation_artifacts
 
         except Exception as e:
