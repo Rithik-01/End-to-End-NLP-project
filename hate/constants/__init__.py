@@ -43,12 +43,12 @@ X_TRAIN_FILE_NAME = 'x_train.csv'
 
 RANDOM_STATE = 42
 EPOCH = 2
-BATCH_SIZE = 128
+BATCH_SIZE = 64
 VALIDATION_SPLIT = 0.2
 
 # Model Architecture constants
 MAX_WORDS = 50000
-MAX_LEN = 30
+MAX_LEN = 29
 LOSS = 'binary_crossentropy'
 METRICS = ['accuracy']
 ACTIVATION = 'sigmoid'
