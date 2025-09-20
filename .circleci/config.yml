@@ -1,49 +1,44 @@
 version: 2.1
-orbs:
-  aws-ecr: circleci/aws-ecr@8.2.1
-  aws-cli: circleci/aws-cli@3.1.4
+
 jobs:
   continuous-integration:
     docker:
       - image: cimg/base:stable
     resource_class: medium
     steps:
+      - checkout
+
       - setup_remote_docker:
           version: 20.10.14
           docker_layer_caching: true
 
-      - aws-ecr/build-and-push-image:
-          create-repo: true
-          dockerfile: Dockerfile
-          path: .
-          platform: linux/amd64
-          push-image: true
-          region: '${AWS_REGION}'
-          repo: demo
-          registry-id: AWS_ECR_REGISTRY_ID
-          repo-scan-on-push: true
-          tag: latest
+      - run:
+          name: Authenticate to GCP
+          command: |
+            echo "$GCLOUD_SERVICE_KEY" > ${HOME}/gcloud-key.json
+            gcloud auth activate-service-account --key-file=${HOME}/gcloud-key.json
+            gcloud config set project steady-burner-468814-b4
+            gcloud auth configure-docker us-central1-docker.pkg.dev
+
+      - run:
+          name: Build and Push Docker Image
+          command: |
+            IMAGE_NAME=us-central1-docker.pkg.dev/steady-burner-468814-b4/my-nlp-app/my-nlp-image:latest
+            docker build -t $IMAGE_NAME .
+            docker push $IMAGE_NAME
 
   continuous-delivery:
-    machine: true
-    resource_class: bappy/haterunner
-    steps:
-      - aws-cli/setup
+  machine: true
+  steps:
+    - checkout
 
-      - run:
-          name: auth to aws ecr
-          command: aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 136566696263.dkr.ecr.us-east-1.amazonaws.com
-          
-          
+    - run:
+        name: SSH into GCE VM and deploy
+        command: |
+          IMAGE_NAME=us-central1-docker.pkg.dev/steady-burner-468814-b4/my-nlp-app/my-nlp-image:latest
+          ssh -o StrictHostKeyChecking=no -i ~/.ssh/circleci-gce hateclassifyproject@34.63.254.156 \
+            "docker pull $IMAGE_NAME && docker stop my-nlp-app || true && docker rm my-nlp-app || true && docker run -d --name my-nlp-app -p 8080:8080 $IMAGE_NAME"
 
-      - run:
-          name: pull image from private repository
-          command: docker pull 136566696263.dkr.ecr.us-east-1.amazonaws.com/demo:latest
-          
-      
-      - run:
-          name: run image
-          command: docker run -d -p 8080:8080 136566696263.dkr.ecr.us-east-1.amazonaws.com/demo:latest
 workflows:
   CICD:
     jobs:
