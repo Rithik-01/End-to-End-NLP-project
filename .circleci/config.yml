@@ -1,25 +1,34 @@
 version: 2.1
 
+orbs:
+  gcp-cli: circleci/gcp-cli@3.1.0
+
 jobs:
   continuous-integration:
     docker:
       - image: cimg/base:stable
     resource_class: medium
     steps:
-      - checkout
-
+      - run:
+          name: Debug - Check environment
+          command: |
+            echo "Checking environment..."
+            pwd
+            ls -la
+            echo "Docker version:"
+            docker --version
+            echo "Environment variables:"
+            env | grep -E "(CIRCLE|GCLOUD)" || echo "No CircleCI/GCloud vars found"
       - setup_remote_docker:
           version: 20.10.14
           docker_layer_caching: true
-
+      - gcp-cli/install
+      - gcp-cli/initialize:
+          gcloud-service-key: GCLOUD_SERVICE_KEY
+          google-project-id: steady-burner-468814-b4
       - run:
-          name: Authenticate to GCP
-          command: |
-            echo "$GCLOUD_SERVICE_KEY" > ${HOME}/gcloud-key.json
-            gcloud auth activate-service-account --key-file=${HOME}/gcloud-key.json
-            gcloud config set project steady-burner-468814-b4
-            gcloud auth configure-docker us-central1-docker.pkg.dev
-
+          name: Configure Docker for GCR
+          command: gcloud auth configure-docker us-central1-docker.pkg.dev
       - run:
           name: Build and Push Docker Image
           command: |
@@ -31,7 +40,6 @@ jobs:
     machine: true
     steps:
       - checkout
-
       - run:
           name: SSH into GCE VM and deploy
           command: |
@@ -45,5 +53,4 @@ workflows:
       - continuous-integration
       - continuous-delivery:
           requires:
-          - continuous-integration
-
+            - continuous-integration
