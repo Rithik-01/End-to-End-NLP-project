@@ -23,7 +23,7 @@ jobs:
           version: 20.10.14
           docker_layer_caching: true
       - gcp-cli/install
-      - gcp-cli/auth:
+      - gcp-cli/setup:
           gcloud-service-key: GCLOUD_SERVICE_KEY
           google-project-id: steady-burner-468814-b4
       - run:
