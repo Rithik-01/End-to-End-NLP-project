@@ -32,7 +32,9 @@ sudo mkdir -p /var/opt/circleci
 sudo chmod 0750 /var/opt/circleci
 sudo chown -R circleci /var/opt/circleci /opt/circleci/circleci-launch-agent
 
-
+# for ubuntu 24.04
+sudo apt update
+sudo apt install nano -y
 
 # Create a CircleCI runner configuration
 sudo mkdir -p /etc/opt/circleci
@@ -43,7 +45,7 @@ sudo nano /etc/opt/circleci/launch-agent-config.yaml
 
 # Add API in the file and change permissions
 api:
-  auth_token: 17f70d59d059a9c24d6e37d51afb969f8ccf10124be54033a0a2b0f8a645a7e187ec1551d3d07042
+  auth_token: ed3f94b5d348a6a45f84b79fa2b1387042a3597620bb52b12c36b6a8380ad09f9be3b7f93a705553
 
 runner:
   name: self-hosted
@@ -102,19 +104,8 @@ sudo systemctl status circleci.service
 
 
 
-## Install AWS CLI
-curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-sudo apt install unzip
-unzip awscliv2.zip
-sudo ./aws/install
-sudo ./aws/install --bin-dir /usr/local/bin --install-dir /usr/local/aws-cli --update
+# Install Googlecli
+sudo apt-get update && sudo apt-get install -y apt-transport-https ca-certificates gnupg curl
+echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] http://packages.cloud.google.com/apt cloud-sdk main" | sudo tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
+curl https://packages.cloud.google.com/apt/doc/apt-key.gpg |  sudo gpg --dearmor -o /usr/share/keyrings/cloud.google.gpg
 
-
-
-
-
-# add them inside environment variables
-AWS_ACCESS_KEY_ID
-AWS_SECRET_ACCESS_KEY
-AWS_REGION
-AWS_ECR_REGISTRY_ID
