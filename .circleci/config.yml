@@ -54,8 +54,8 @@ jobs:
               "gcloud auth configure-docker us-central1-docker.pkg.dev --quiet && \
               docker pull $IMAGE_NAME && \
               docker stop my-nlp-app || true && \
-              docker rm my-nlp-app || true && \
-              docker run -d --name my-nlp-app -p 8080:8080 $IMAGE_NAME"
+              docker rm -f my-nlp-app || true && \
+              docker run -d --name my-nlp-app -p 8080:8080 --restart=unless-stopped $IMAGE_NAME"
 
 workflows:
   CICD:
