@@ -44,8 +44,8 @@ jobs:
     steps:
       - checkout
       - add_ssh_keys:
-        fingerprints:
-          - "SHA256:5xYxFDbFLSkk57ArHySJ3xxTPCAh51e0f+31WOjb44Q"
+          fingerprints:
+            - "SHA256:5xYxFDbFLSkk57ArHySJ3xxTPCAh51e0f+31WOjb44Q"
       - run:
           name: SSH into GCE VM and deploy
           command: |
