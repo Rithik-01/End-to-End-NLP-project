@@ -22,10 +22,10 @@ jobs:
       - run:
           name: Install and setup gcloud
           command: |
-            echo "n" | curl https://sdk.cloud.google.com | bash
+            curl https://sdk.cloud.google.com > install.sh
+            bash install.sh --disable-prompts
+            export PATH=$HOME/google-cloud-sdk/bin:$PATH
             echo 'export PATH=$HOME/google-cloud-sdk/bin:$PATH' >> $BASH_ENV
-            echo 'source $HOME/google-cloud-sdk/path.bash.inc' >> $BASH_ENV
-            source $BASH_ENV
             echo "$GCLOUD_SERVICE_KEY" > ${HOME}/gcloud-key.json
             gcloud auth activate-service-account --key-file=${HOME}/gcloud-key.json
             gcloud config set project steady-burner-468814-b4
