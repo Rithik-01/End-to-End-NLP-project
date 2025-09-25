@@ -44,11 +44,17 @@ jobs:
     steps:
       - checkout
       - run:
-          name: SSH into GCE VM and deploy
-          command: |
-            IMAGE_NAME=us-central1-docker.pkg.dev/steady-burner-468814-b4/my-nlp-app/my-nlp-image:latest
-            ssh -o StrictHostKeyChecking=no -i ~/.ssh/circleci-gce hateclassifyproject@34.63.254.156 \
-              "docker pull $IMAGE_NAME && docker stop my-nlp-app || true && docker rm my-nlp-app || true && docker run -d --name my-nlp-app -p 8080:8080 $IMAGE_NAME"
+        name: Setup SSH key
+        command: |
+          mkdir -p ~/.ssh
+          echo "$SSH_PRIVATE_KEY" > ~/.ssh/circleci-gce
+          chmod 600 ~/.ssh/circleci-gce
+      - run:
+        name: SSH into GCE VM and deploy
+        command: |
+          IMAGE_NAME=us-central1-docker.pkg.dev/steady-burner-468814-b4/my-nlp-app/my-nlp-image:latest
+          ssh -o StrictHostKeyChecking=no -i ~/.ssh/circleci-gce hateclassifyproject@34.63.254.156 \
+            "docker pull $IMAGE_NAME && docker stop my-nlp-app || true && docker rm my-nlp-app || true && docker run -d --name my-nlp-app -p 8080:8080 $IMAGE_NAME"
 
 workflows:
   CICD:
