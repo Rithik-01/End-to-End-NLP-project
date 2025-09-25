@@ -22,7 +22,8 @@ jobs:
       - run:
           name: Install and setup gcloud
           command: |
-            curl https://sdk.cloud.google.com | bash
+            echo "n" | curl https://sdk.cloud.google.com | bash
+            echo 'export PATH=$HOME/google-cloud-sdk/bin:$PATH' >> $BASH_ENV
             echo 'source $HOME/google-cloud-sdk/path.bash.inc' >> $BASH_ENV
             source $BASH_ENV
             echo "$GCLOUD_SERVICE_KEY" > ${HOME}/gcloud-key.json
